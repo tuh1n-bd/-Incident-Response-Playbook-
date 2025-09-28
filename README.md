@@ -1,8 +1,7 @@
-🛡️ IR Playbook – 1.2: Brute Force Attack Detection
+ IR Playbook – 1.2: Brute Force Attack Detection
 --
 
-
-📖 Overview
+ Overview
 -
 This project demonstrates how to detect, investigate, and respond to Brute Force attacks on Windows authentication logs using Splunk SPL queries. The playbook is mapped to the MITRE ATT&CK framework to ensure standardized adversary behavior tracking.
 
@@ -10,7 +9,7 @@ The detection focuses on identifying excessive failed logon attempts (EventID=46
 
 By combining baseline detection, enrichment, threat hunting patterns, and threat intelligence lookups, this playbook provides a complete detection-to-response workflow for brute force attacks.
 
-🔑 Key Benefits:
+ Key Benefits:
 
 Detect brute force attempts in real-time.
 
@@ -25,11 +24,11 @@ Automate alerts for SOC teams.
 
 
 
-📌 MITRE ATT&CK Mapping
+ MITRE ATT&CK Mapping
 • T1110 – Brute Force (Password Guessing)
 • T1078 – Valid Accounts (Goal is to obtain valid credentials)
 -
-1️⃣ Detection – Find Excessive Failed Logons
+ 1.Detection – Find Excessive Failed Logons
 
 sql
 
@@ -46,7 +45,7 @@ index="sim1" sourcetype="csv" source="SecurityLogs_MITRE_Advanced_sample.csv" Ev
 
 ========================================================================================================================================================================================
 
-2️⃣ Enrichment – Add Context to the Attacks
+ 2.Enrichment – Add Context to the Attacks
 
 
 Now we expand: When did this happen? What was the target?
@@ -61,7 +60,7 @@ index="sim1" sourcetype="csv" source="SecurityLogs_MITRE_Advanced_sample.csv" Ev
 | sort - count
 
 
-🔍 This gives:
+This gives:
 •	Source_IP: The attacking host.
 •	Account_Name: The target user account.
 •	count: Total number of attempts.
@@ -72,7 +71,7 @@ index="sim1" sourcetype="csv" source="SecurityLogs_MITRE_Advanced_sample.csv" Ev
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-3️⃣ Threat Hunting – Identify Attack Patterns
+3. Threat Hunting – Identify Attack Patterns
 Categorize the attacks to understand the adversary's strategy.
 
 sql
@@ -93,7 +92,7 @@ index="sim1" sourcetype="csv" source="SecurityLogs_MITRE_Advanced_sample.csv" Ev
 <img width="1227" height="829" alt="3 Threat Hunting – Identify Attack Patterns" src="https://github.com/user-attachments/assets/b7be050f-2d6d-4e48-9a73-0ac74009b866" />
 
 ---------------------------------------------
-4️⃣ Threat Intel – External Reputation Check
+4. Threat Intel – External Reputation Check
 Enrich the attacking IPs with threat intelligence.
 
 spl
@@ -111,7 +110,7 @@ index="sim1" sourcetype="mitre_logs" EventID=4625
 <img width="1229" height="907" alt="4  Threat Intel – External Reputation Check" src="https://github.com/user-attachments/assets/57c42eef-7e54-4af8-9717-da179e67a947" />
 
 -------------------------------------------------------------
-5️⃣ IR Investigation Steps
+5. IR Investigation Steps
 When a brute force attack is detected:
 1.	Confirm the Target(s): Identify the user account(s) being targeted. Are they high-value (e.g., Administrator, domain admins, service accounts)?
 
@@ -131,7 +130,7 @@ index="sim1" (EventID=4624 OR EventID=4625) Source_IP="192.168.212.28"
 <img width="1230" height="902" alt="5  IR Investigation Steps" src="https://github.com/user-attachments/assets/6dc0376f-1354-47c0-af7d-09c1c2fa4002" />
 
 ----------------------------------------------------------
-6️⃣ Response Actions
+6. Response Actions
 
 •	If Malicious & Ongoing:
 1.	Block the IP at the network perimeter (firewall) or host level (Windows Firewall via GPO).
@@ -144,7 +143,7 @@ o	Could be a misconfigured service or script. Document the exception and tune th
 
 -------------------------------------------------
 
-7️⃣ Alerting – Make it Continuous
+8. Alerting – Make it Continuous
 
 Create a scheduled Splunk alert:
 •	Search: The base detection query.
