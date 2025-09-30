@@ -29,6 +29,7 @@ Automate alerts for SOC teams.
 • T1078 – Valid Accounts (Goal is to obtain valid credentials)
 -
  1.Detection – Find Excessive Failed Logons
+ --
 
 sql
 
@@ -46,6 +47,7 @@ index="sim1" sourcetype="csv" source="SecurityLogs_MITRE_Advanced_sample.csv" Ev
 ========================================================================================================================================================================================
 
  2.Enrichment – Add Context to the Attacks
+ ---
 
 
 Now we expand: When did this happen? What was the target?
@@ -72,6 +74,7 @@ This gives:
 
 
 3. Threat Hunting – Identify Attack Patterns
+   ---
 Categorize the attacks to understand the adversary's strategy.
 
 sql
@@ -93,6 +96,7 @@ index="sim1" sourcetype="csv" source="SecurityLogs_MITRE_Advanced_sample.csv" Ev
 
 ---------------------------------------------
 4. Threat Intel – External Reputation Check
+   ---
 Enrich the attacking IPs with threat intelligence.
 
 spl
@@ -111,7 +115,10 @@ index="sim1" sourcetype="mitre_logs" EventID=4625
 
 -------------------------------------------------------------
 5. IR Investigation Steps
+   ---
+   
 When a brute force attack is detected:
+
 1.	Confirm the Target(s): Identify the user account(s) being targeted. Are they high-value (e.g., Administrator, domain admins, service accounts)?
 
 
@@ -122,15 +129,18 @@ index="sim1" (EventID=4624 OR EventID=4625) Source_IP="192.168.212.28"
 | transaction Source_IP, Account_Name startswith=(EventID=4625) endswith=(EventID=4624)
 | table _time, Source_IP, Account_Name, EventID
 
+<img width="1230" height="902" alt="5  IR Investigation Steps" src="https://github.com/user-attachments/assets/6dc0376f-1354-47c0-af7d-09c1c2fa4002" />
+
 
 3.	Review Account Activity: If a success is found, investigate what that account did immediately after logging in (other events from that user session).
 4.	Check IP Reputation: Manually look up the IP in AbuseIPDB, VirusTotal, etc.
 
 
-<img width="1230" height="902" alt="5  IR Investigation Steps" src="https://github.com/user-attachments/assets/6dc0376f-1354-47c0-af7d-09c1c2fa4002" />
+
 
 ----------------------------------------------------------
 6. Response Actions
+   ---
 
 •	If Malicious & Ongoing:
 1.	Block the IP at the network perimeter (firewall) or host level (Windows Firewall via GPO).
@@ -139,7 +149,7 @@ index="sim1" (EventID=4624 OR EventID=4625) Source_IP="192.168.212.28"
 4.	If a successful login occurred, initiate your incident response protocol for compromised accounts.
 
 •	If Benign:
-o	Could be a misconfigured service or script. Document the exception and tune the alert to exclude that source IP if appropriate
+Could be a misconfigured service or script. Document the exception and tune the alert to exclude that source IP if appropriate
 
 -------------------------------------------------
 
